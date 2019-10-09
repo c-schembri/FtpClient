@@ -73,10 +73,10 @@ namespace FtpLibrary
             this.ftpWebRequest.Method = WebRequestMethods.Ftp.DownloadFile;
             this.ftpWebResponse = (FtpWebResponse)this.ftpWebRequest.GetResponse();
             this.responseStream = this.ftpWebResponse.GetResponseStream();
-            this.UpdateRequestStatus($"{this.ftpUri} download update -> {this.ftpWebResponse.StatusDescription}", this.ftpWebResponse.StatusCode);
+            this.RequestStatus = $"{this.ftpUri} download update -> {this.ftpWebResponse.StatusDescription}";
+            this.RequestStatusCode = this.ftpWebResponse.StatusCode;
             if (this.responseStream != null && this.responseStream != Stream.Null) 
                 return true;
-            
             this.RequestStatus = $"{this.ftpUri} download error -> requested file is empty.";
             return false;
         }
@@ -91,7 +91,8 @@ namespace FtpLibrary
                 this.responseStream.CopyTo(fileStream);
             }
             this.ftpWebResponse.Close();
-            this.UpdateRequestStatus($"{this.ftpUri} download update -> {this.ftpWebResponse.StatusDescription}", this.ftpWebResponse.StatusCode);
+            this.RequestStatus = $"{this.ftpUri} download update -> {this.ftpWebResponse.StatusDescription}";
+            this.RequestStatusCode = this.ftpWebResponse.StatusCode;
         }
 
         /// <summary>
@@ -108,12 +109,12 @@ namespace FtpLibrary
             {
                 fileContents = binaryReader.ReadBytes((int)fileInfo.Length);
             }
-            using (var requestStream = this.ftpWebRequest.GetRequestStream())
-            {
-                requestStream.Write(fileContents, 0, fileContents.Length);
-            }
+            var requestStream = this.ftpWebRequest.GetRequestStream();
+            requestStream.Write(fileContents, 0, fileContents.Length);
+            requestStream.Close();
             this.ftpWebResponse.Close();
-            this.UpdateRequestStatus($"{this.ftpUri} upload update -> {this.ftpWebResponse.StatusDescription}", this.ftpWebResponse.StatusCode);
+            this.RequestStatus = $"{this.ftpUri} upload update -> {this.ftpWebResponse.StatusDescription}";
+            this.RequestStatusCode = this.ftpWebResponse.StatusCode;
         }
 
         /// <summary>
@@ -124,7 +125,8 @@ namespace FtpLibrary
             this.ftpWebRequest.Method = WebRequestMethods.Ftp.DeleteFile;
             this.ftpWebResponse = (FtpWebResponse)this.ftpWebRequest.GetResponse();
             this.ftpWebResponse.Close();
-            this.UpdateRequestStatus($"{this.ftpUri} delete file update -> {this.ftpWebResponse.StatusDescription}", this.ftpWebResponse.StatusCode);
+            this.RequestStatus = $"{this.ftpUri} delete file update -> {this.ftpWebResponse.StatusDescription}";
+            this.RequestStatusCode = this.ftpWebResponse.StatusCode;
         }
         
         /// <summary>
@@ -136,7 +138,8 @@ namespace FtpLibrary
             this.ftpWebRequest.RenameTo = this.path;
             this.ftpWebResponse = (FtpWebResponse)this.ftpWebRequest.GetResponse();
             this.ftpWebResponse.Close();
-            this.UpdateRequestStatus($"{this.ftpUri} rename update -> {this.ftpWebResponse.StatusDescription}", this.ftpWebResponse.StatusCode);
+            this.RequestStatus = $"{this.ftpUri} rename update -> {this.ftpWebResponse.StatusDescription}";
+            this.RequestStatusCode = this.ftpWebResponse.StatusCode;
         }
 
         /// <summary>
@@ -147,7 +150,8 @@ namespace FtpLibrary
             this.ftpWebRequest.Method = WebRequestMethods.Ftp.GetFileSize;
             this.ftpWebResponse = (FtpWebResponse)this.ftpWebRequest.GetResponse();
             this.ftpWebResponse.Close();
-            this.UpdateRequestStatus($"{this.ftpUri} get size update -> {this.ftpWebResponse.StatusDescription}", this.ftpWebResponse.StatusCode);
+            this.RequestStatus = $"{this.ftpUri} get size update -> {this.ftpWebResponse.StatusDescription}";
+            this.RequestStatusCode = this.ftpWebResponse.StatusCode;
         }
         
         /// <summary>
@@ -159,10 +163,10 @@ namespace FtpLibrary
             this.ftpWebRequest.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
             this.ftpWebResponse = (FtpWebResponse)this.ftpWebRequest.GetResponse();
             this.responseStream = this.ftpWebResponse.GetResponseStream();
-            this.UpdateRequestStatus($"{this.ftpUri} list directory update -> {this.ftpWebResponse.StatusDescription}", this.ftpWebResponse.StatusCode);
+            this.RequestStatus = $"{this.ftpUri} list directory update -> {this.ftpWebResponse.StatusDescription}";
+            this.RequestStatusCode = this.ftpWebResponse.StatusCode;
             if (this.responseStream == null || this.responseStream == Stream.Null) 
                 return false;
-            
             using (var streamReader = new StreamReader(this.responseStream))
             {
                 this.Directory = streamReader.ReadToEnd();
@@ -179,7 +183,8 @@ namespace FtpLibrary
             this.ftpWebRequest.Method = WebRequestMethods.Ftp.MakeDirectory;
             this.ftpWebResponse = (FtpWebResponse)this.ftpWebRequest.GetResponse();
             this.ftpWebResponse.Close();
-            this.UpdateRequestStatus($"{this.ftpUri} make directory update -> {this.ftpWebResponse.StatusDescription}", this.ftpWebResponse.StatusCode);
+            this.RequestStatus = $"{this.ftpUri} make directory update -> {this.ftpWebResponse.StatusDescription}";
+            this.RequestStatusCode = this.ftpWebResponse.StatusCode;
         }
 
         /// <summary>
@@ -190,18 +195,8 @@ namespace FtpLibrary
             this.ftpWebRequest.Method = WebRequestMethods.Ftp.RemoveDirectory;
             this.ftpWebResponse = (FtpWebResponse)this.ftpWebRequest.GetResponse();
             this.ftpWebResponse.Close();
-            this.UpdateRequestStatus($"{this.ftpUri} remove directory update -> {this.ftpWebResponse.StatusDescription}", this.ftpWebResponse.StatusCode);
-        }
-
-        /// <summary>
-        /// Updates the internal status and status code.
-        /// </summary>
-        /// <param name="newStatus">The new status to update to.</param>
-        /// <param name="newStatusCode">The new status code to update to.</param>
-        private void UpdateRequestStatus(string newStatus, FtpStatusCode newStatusCode)
-        {
-            this.RequestStatus = newStatus;
-            this.RequestStatusCode = newStatusCode;
+            this.RequestStatus = $"{this.ftpUri} remove directory update -> {this.ftpWebResponse.StatusDescription}";
+            this.RequestStatusCode = this.ftpWebResponse.StatusCode;
         }
     }
 }
