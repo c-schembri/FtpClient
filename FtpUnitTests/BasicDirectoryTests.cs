@@ -15,10 +15,10 @@ namespace FtpUnitTests
         [Test]
         public void CheckListDirectory()
         {
-            const string ftp_uri = "ftp://_serveraddress_/";
+            string ftp_uri = $"{Config.Server_Address}/";
             try
             {
-                using (var ftp = new FileTransferProtocol(ftp_uri, null, "username", "password"))
+                using (var ftp = new FileTransferProtocol(ftp_uri, null, Config.Username, Config.Password))
                 {
                     if (ftp.UpdateDirectoryList())
                     {
@@ -46,10 +46,10 @@ namespace FtpUnitTests
         [Test, Order(1)]
         public void CheckMakeDirectory()
         {
-            const string ftp_uri = "ftp://_serveraddress_/new_directory";
+            string ftp_uri = $"{Config.Server_Address}/new_directory";
             try
             {
-                using (var ftp = new FileTransferProtocol(ftp_uri, null, "username", "password"))
+                using (var ftp = new FileTransferProtocol(ftp_uri, null, Config.Username, Config.Password))
                 {
                     ftp.MakeDirectory();
                     Assert.That(ftp.RequestStatusCode == FtpStatusCode.PathnameCreated);
@@ -71,10 +71,10 @@ namespace FtpUnitTests
         [Test, Order(2)]
         public void CheckRenameDirectory()
         {
-            const string ftp_uri = "ftp://_serveraddress_/new_directory";
+            string ftp_uri = $"{Config.Server_Address}/new_directory";
             try
             {
-                using (var ftp = new FileTransferProtocol(ftp_uri, "new_directory_renamed", "username", "password"))
+                using (var ftp = new FileTransferProtocol(ftp_uri, "new_directory_renamed", Config.Username, Config.Password))
                 {
                     ftp.Rename();
                     Assert.That(ftp.RequestStatusCode == FtpStatusCode.FileActionOK);
@@ -96,10 +96,10 @@ namespace FtpUnitTests
         [Test, Order(3)]
         public void CheckRemoveDirectory()
         {
-            const string ftp_uri = "ftp://_serveraddress_/new_directory_renamed";
+            string ftp_uri = $"{Config.Server_Address}/new_directory_renamed";
             try
             {
-                using (var ftp = new FileTransferProtocol(ftp_uri, null, "username", "password"))
+                using (var ftp = new FileTransferProtocol(ftp_uri, null, Config.Username, Config.Password))
                 {
                     ftp.RemoveDirectory();
                     Assert.That(ftp.RequestStatusCode == FtpStatusCode.FileActionOK);

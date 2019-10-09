@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="BasicDirectoryTests.cs" />
     <Compile Include="BasicFileTests.cs" />
+    <Compile Include="Config.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

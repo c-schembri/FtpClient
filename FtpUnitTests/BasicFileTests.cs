@@ -16,11 +16,11 @@ namespace FtpUnitTests
         [Test, Order(1)]
         public void CheckDownloadFile()
         {
-            const string ftp_uri = "ftp://_serveraddress_/zip_file.zip";
+            string ftp_uri = $"{Config.Server_Address}/zip_file.zip";
             const string path = "downloaded_zip_file.zip";
             try
             {
-                using (var ftp = new FileTransferProtocol(ftp_uri, path, "username", "password"))
+                using (var ftp = new FileTransferProtocol(ftp_uri, path, Config.Username, Config.Password))
                 {
                     if (ftp.RequestFileDownload())
                     {
@@ -51,11 +51,11 @@ namespace FtpUnitTests
         [Test, Order(2)]
         public void CheckUploadFile()
         {
-            const string ftp_uri = "ftp://_serveraddress_/uploaded_zip_file.zip";
+            string ftp_uri = $"{Config.Server_Address}/uploaded_zip_file.zip";
             const string path = "downloaded_zip_file.zip";
             try
             {
-                using (var ftp = new FileTransferProtocol(ftp_uri, path, "username", "password"))
+                using (var ftp = new FileTransferProtocol(ftp_uri, path, Config.Username, Config.Password))
                 {
                     Assert.That(File.Exists(path));
                     ftp.UploadFile();
@@ -78,11 +78,11 @@ namespace FtpUnitTests
         [Test, Order(3)]
         public void CheckRenameFile()
         {
-            const string ftp_uri = "ftp://_serveraddress_/uploaded_zip_file.zip";
+            string ftp_uri = $"{Config.Server_Address}/uploaded_zip_file.zip";
             const string path = "renamed_zip_file.zip";
             try
             {
-                using (var ftp = new FileTransferProtocol(ftp_uri, path, "username", "password"))
+                using (var ftp = new FileTransferProtocol(ftp_uri, path, Config.Username, Config.Password))
                 {
                     ftp.Rename();
                     Assert.That(ftp.RequestStatusCode == FtpStatusCode.FileActionOK);
@@ -104,10 +104,10 @@ namespace FtpUnitTests
         [Test, Order(4)]
         public void CheckGetSize()
         {
-            const string ftp_uri = "ftp://_serveraddress_/renamed_zip_file.zip";
+            string ftp_uri = $"{Config.Server_Address}/renamed_zip_file.zip";
             try
             {
-                using (var ftp = new FileTransferProtocol(ftp_uri, null, "username", "password"))
+                using (var ftp = new FileTransferProtocol(ftp_uri, null, Config.Username, Config.Password))
                 {
                     ftp.GetSize();
                     Assert.That(ftp.RequestStatusCode == FtpStatusCode.FileStatus);
@@ -129,10 +129,10 @@ namespace FtpUnitTests
         [Test, Order(5)]
         public void CheckDeleteFile()
         {
-            const string ftp_uri = "ftp://_serveraddress_/renamed_zip_file.zip";
+            string ftp_uri = $"{Config.Server_Address}/renamed_zip_file.zip";
             try
             {
-                using (var ftp = new FileTransferProtocol(ftp_uri, null, "username", "password"))
+                using (var ftp = new FileTransferProtocol(ftp_uri, null, Config.Username, Config.Password))
                 {
                     ftp.DeleteFile();
                     Assert.That(ftp.RequestStatusCode == FtpStatusCode.FileActionOK);
